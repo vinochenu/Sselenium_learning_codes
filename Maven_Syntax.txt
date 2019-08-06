@@ -1,0 +1,123 @@
+
+//Build Life Cycle
+1.Default
+2.clean
+3.Site
+
+//Default - Phases
+validate - validate the project is correct and all necessary information is available
+compile - compile the source code of the project
+test - test the compiled source code using a suitable unit testing framework. These tests should not require the code be packaged or deployed
+package - take the compiled code and package it in its distributable format, such as a JAR.
+verify - run any checks on results of integration tests to ensure quality criteria are met
+install - install the package into the local repository, for use as a dependency in other projects locally
+deploy - done in the build environment, copies the final package to the remote repository for sharing with other developers and projects.
+
+
+
+//archetype
+it will give the Template about the project how it should be ( normally we can skip this )
+
+//GOALS
+1. package- it will create package in JAR ( BUILD )- > will in Target folder
+2. site- it will create a documentation - will in Target folder
+
+
+//Dependencies:
+
+  <dependencies>
+  <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>3.141.5</version>
+</dependency>
+</dependencies>
+  
+  ****************************************
+  
+//updating Java 1.5 to 1.8
+
+<build>
+  <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+    </build>
+	
+	***************************************
+	
+	
+	local Repository:
+	
+	Users- >.m2 -> com -> downloaded files
+	when ever saving pom.xml- maven will verify this location whether it is already available if not it will download from mvn repository
+	
+	***************************************
+	
+	
+	//Run by Maven Build:
+	
+	when we directly giving Run by Maven Build without adding main class , we will get "NO MAIN MANIFEST ATTRIBUTE" error 
+	Solution: we need to add plugin for adding "main class" & "Dependencies"
+
+target-> classes-> META-INF-> MANIFEST.MF	in this folder it will have all main class & dependencies
+	
+Manifest-Version: 1.0
+Built-By: e3027405
+Build-Jdk: 1.8.0_171
+Created-By: Maven Integration for Eclipse
+
+NOTE: if no main class & dependencies are given : the above details only available 
+
+
+********************************************
+	
+	
+	//adding main class & lib -external folder
+	
+	// to add main class& class path & lib folder 
+	
+	<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <archive>
+            <manifest>
+             <mainClass>mvn_Build.OpenGoogle</mainClass>
+			  <addClasspath>true</addClasspath>
+			  <classpathPrefix>lib/</classpathPrefix>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+	  
+	  // to copy dependencies into folder(lib)
+	  
+	  <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+            <execution>
+                <id>copy-dependencies</id>
+                <phase>prepare-package</phase>
+                <goals>
+                    <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                    <overWriteReleases>false</overWriteReleases>
+                    <overWriteSnapshots>false</overWriteSnapshots>
+                    <overWriteIfNewer>true</overWriteIfNewer>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
