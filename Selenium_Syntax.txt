@@ -1,0 +1,645 @@
+
+
+//Alert box:
+
+Alert alert=Object.switchto().alert();
+
+alert.accept();//to click 'ok'
+alert.dismiss();//to click 'cancel'
+alert.sendkeys();//to input data
+
+//drop down
+
+Select select=new Select(WebElement)
+
+select.selectbyindex();
+select.selectbyvalue();
+select.selectbyvisibletext();
+
+//drag and drop
+
+Actions action=new Action(Object);
+action.draganddrop(from,to);
+
+//Screenshot
+
+TakesScreenshot screenshot=(TakesScreenshot)Object;//to take screenshot
+File sourcefile=screenshot.getScreenshotAs(OutputType.FILE);//to store that screenshot in file
+File destinationfile=new File("location & file name");//to mention the location  & file name(separate)
+FileUtils.copy(sourcefile,destinationfile); or FileHandler.copy(sourcefile,destinationfile);( to copy that sceenshot file into mentioned location&file name)
+NOTE: FIleUtils need common.io jar externally 
+
+if we need complete screenshot(full window)
+
+Robot robot=new Robot();
+Dimension screensize=Toolkit.getdefaulttoolkit().getscreensize();
+Rectangle rectangle=new Rectangle(screensize);
+BufferedImage sourcefile=robot.createscreencapture(rectangle);
+File destinationfile=new File("location & file name")
+ImageIO.write(sourcefile,"format",destinationfile);
+
+
+//Autocomplete
+
+inspect the text box
+type the search letter and store in 'List'
+use for each loop and gettext()
+and verfiy gettext() equals your input and click it
+
+//File upload
+
+here we need AutoIT(External app) to handle windows since selenium wont handle windowbased
+download the AutoIT, we will get AutoIT info & SCITE script editor
+Using AutoIT info ( inspect the window element)
+and write script in SCITE editor as below
+ControlFocus("Title","Text","ControlID")// Here ControlID is combination of 'class' & 'instance'
+ControlSetText("Title","Text","ControlID","path of the file to store")
+ControlClick("Title","Text","ControlID")
+and save this 'au3' format
+once saved , right click and compile the script in order to change.au3 file into .exe file
+then In Eclipse
+Runtime.getRuntime().exec("path of the .exe  file);
+
+//file download
+Inspect the download webelement and click it
+here in order to verfiy your download file, refer below code
+
+File file=new File("download location path");
+File[] allfiles=file.listFiles();//to get all files under the path
+use for each and getname() equals your download file name
+
+// to find broken link
+
+'href' attribute -> getAttribute("href")will define the target link(eg: 'error.html or go to homepage.html)
+if its tile conatins '404', its broken link
+
+Here , when we use the same code for inspected webelement again, we will get 'org.openqa.selenium.StaleElementReferenceException', so when the page is refreshed, we need to inpect newly
+
+
+// to find broken image
+if(webelement.getAttribute("naturalWidth").equals("0"){
+sysout("image is broken")
+}
+
+naturalWidth attribute-> getAttribute("naturalWidth") defines the image broken or not, if it is '0' then its broken image
+
+
+//to identify radio or check box is selected or not
+
+inpect the web element and use isSelected() function
+it will return boolean value
+
+
+//to select multiple option(selectable)
+
+inpect the webELement and store in 'List'
+
+-----by using keyboard
+Actions action=new Action(Object);
+action.keydown(Key.CONTROL).click(selectable.get(index1)).click(selectable.get(index2)).build().perform();
+
+-----by using mouse
+Actions action=new Action(Object);
+action.clickAndHold(selectable.get(index1)).clickAndHold(selectable.get(index2)).build().perform();
+
+//sortable
+
+----store all web elemets under 'List'
+List<WebElement> elementslist=Object.findElements(By.xpath(""));
+
+---to get first & last element from the list and store in webelement
+WebElement toElement=elementslist.get(0);
+WebElement fromElement=elementslist.get(6);
+-----to sort the element
+Actions action=new Action(Object);
+action.clickAndHold(fromElement);
+action.movetoelement(toElement);
+action.release(toElement);
+action.build().perform();
+
+
+//to get the tooltip
+inspect the webelement 
+use getAttribute("title") -> it will give tooltip
+
+
+//to get no of links
+findelements(By.tagname("a").size();
+
+//to get no of frames
+findelement.By.tagname("iframe").size();
+
+//to switch to frame from parent window
+Object.switchto().frame(index)
+
+//to go back to parentwindow from frames
+Object.switchto().defaultcontent();
+
+
+//window Handles
+
+Object.getwindowHandle()- > it will give current window 
+
+Set<String> windows=Object.getWindowHandles(); -> to store  all opened windows and it should be stored in set
+
+then use for each to iterate the windows
+
+whenever new window is opened, we need to give control to new window to access, so Object.switchTo().newWindowname();
+
+to go back to parent window: Object.switchTo().window(oldwindow);
+
+
+//close & quit
+Object.close(); - > it will close current control window which driver has focus 
+Object.quit(); - > it will close all opned window
+
+//to get no of windows opened
+
+Object.getWindowHandles.size();
+
+
+//to get button position
+
+Inspect the webelement
+weblement.getlocation().getX();- > to get x position
+weblement.getlocation().gety();-> to get Y position
+
+//to get the height & width
+
+Inspect the webelement
+webelement.getsize().getHeight();- > to get height of button
+webelement.getsize().getWidth();-> to get width of button
+
+
+//Thread.sleep(2000)
+it will wait 2 seconds in all case even if webelement is inspected
+
+//implicit wait
+
+driver.manage().timeouts.implicitlywait(20,TimeUnit.SECONDS);
+
+it will not wait if web element is inspected and polling will take place every 500 milliseconds(polling - inpect time interval)
+implicit wait- we cant give any condition and it will inspect if only web elemt present in the DOM & wont work out in (no visible element or element not interactable)
+
+
+ //explicit wait
+ 
+ WebDriverWait wait=new WebDriverWait(driver,30)// need to create object for this class(WebDriverWait) and mention the driver and time to wait
+ Webelement submit=wait.until(ExpectedConditions.elementtoBeClickable(By.name("submit");
+ submit.click();
+
+it will check the condition even if web element is loaded in DOM and so we can avoid the exception (not visible or not interactable )
+
+
+
+
+//Fluent Wait
+
+Wait<WebDriver> wait=new FluentWait<WebDriver> (driver)// need to create object for this interface(Wait) with class (FluentWait and pass the driver and with generics-WebDriver
+.withTimeouts(30,TimeUnit.SECONDS)//timeout to wait
+.pollingEvery(3,TimeUnit.SECONDS)//polling frequency-every 3 seconds(it will avoid the burnden for polling(every 500 ms)- advantage of fluent wait
+.ignoring(nosuchElementException.class);//mention the exception to wait until time gets over: NOTE selenium package should get import when exception adding
+
+
+WebElement submit=wait.until(new Function<WebDriver,WebElement>(){
+public WebElement apply(WebDriver driver){  // add unimplemented method and pass the return the webelement
+return driver.findElement(By.name("Submit");
+});
+submit.click();
+
+//it should be used since the above is deprecated as of now
+withTimeout(Duration.ofSeconds(30))
+.pollingEvery(Duration.ofSeconds(3))
+
+
+//how to input values without send keys function
+ 1. using JavascriptExecutor:
+ WebElement search=driver.findEement(By.name("q");
+ JavaScriptExecutor executor=(JavaScriptExecutor)driver;
+ executor.executeScript("documents.getElementsByName('q')[0].value='FIS'","");
+ 2. using JavascriptExecutor:
+ WebElement search=driver.findEement(By.name("q");
+ JavaScriptExecutor executor=(JavaScriptExecutor)driver;
+ execuote.executeScript("arguments[0].value='FIS'",search)
+ 3.Using Robotclass
+  WebElement search=driver.findEement(By.name("q");
+ Robot robot=new Robot();
+ robot.keyPress(keyEvent.VK_F);
+ robot.keyRelease(keyEvent.VK_F);
+  robot.keyPress(keyEvent.VK_I);
+ robot.keyRelease(keyEvent.VK_I);
+  robot.keyPress(keyEvent.VK_S);
+ robot.keyRelease(keyEvent.VK_S);
+ 
+ 
+ //how to scroll up & down
+ 1. to scroll down some particular measure
+ x=0(horizontal); y=450(vertical)
+ executor.executeScript("window.scroll(0,450)","");
+ 1. to scroll up from this
+ executor.executeScript("window.scroll(0,-450)",""); 
+ 
+ 2.to scroll down till bottom of the page
+ executor.executeScript("window.scrollTo(0,document.body.scrollHeight)","");
+  2.to scroll up from bottom 
+ executor.executeScript("window.scrollTo(0,0)","");
+ 
+ 3.to scroll till inspected element
+  WebElement search=driver.findEement(By.name("q");
+ executor.executeScript("arguments[0].scrollIntoView(true)",search);
+ 
+ 
+ //Assert & verfiy
+ Assert-Hard Assert- it willnot execute the next line if assert condition got failed
+ Assert.asserEquals(expected,actual)
+ Verify- Soft Assert - it will execute the next line if its gets failed
+ SoftAssert verify=new SoftAssert();
+ verify.assertEquals(expected,actual);
+ 
+ 
+ 
+//verify the element is underline or not
+
+inpect the element
+WebElement elementPrivacy=driver.findElement(By.linkText("Privacy"));
+String beforehowering=elementPrivacy.getCSSValue("text-decoration");// getCSSValue("text-decoration") will give u none/underline 
+
+Actions action=new Actions(driver);
+action.moveToElement(elementPrivacy);
+action.perform();
+String Afterhowering=elementPrivacy.getCSSValue("text-decoration");
+
+
+//How to re run failed Test case
+
+case 1: Testng-failed.xml will generate under Output folder, we can execute that xml file
+
+case 2: Interface called IRetryAnalyzer & add unimplement method 
+example:
+public class Rerun_IRetryAnalyzer implements IRetryAnalyzer {
+
+	int failedcount=0;
+	int rerun_limit=3;
+	public boolean retry(ITestResult result) {
+		// TODO Auto-generated method stub
+		
+		if(failedcount<rerun_limit)
+		{
+			failedcount++;
+			return true;
+		}
+		return false;
+		
+and @Test(retryAnalyzer=Rerun_IRetryAnalyzer.class)// inorder to know the testcase which follow IRetryAnalyzer	
+
+
+case 3: Interface called IAnnotationTransformer & add unimplement method : note this will work with IRetryAnalyzer
+examle:
+public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
+		// TODO Auto-generated method stub
+		annotation.setRetryAnalyzer(Rerun_IRetryAnalyzer.class);
+		
+and in XML , we need to add Listeners as mentioned below
+<suite name="Rerun suite" verbose="2" parallel="methods" thread-count="2">
+<listeners>
+<listener class-name="selenium_Interview_Question.IRerun_AnnotatonTransformers">
+</listener>
+</listeners>
+<test name="Rerun Testcase">
+<classes>
+<class name="selenium_Interview_Question.Rerun_FailedTestcase">
+</class>
+</classes>
+</test>
+</suite>
+		
+
+
+//Refresh Types
+
+case 1: navigate().refresh();
+
+case 2: driver.get(driver.getCurrentUrl());
+
+case 3: Using JavaScriptExecutor
+executor.executeScript("location.reload()");//using javascriptexecutor- location.relaod();
+executor.executeScript("history.go(0)");//using javascriptexecutor- history.go(0);
+
+case 4: Robot class
+Robot robot=new Robot();
+robot.keyPress(KeyEvent.VK_F5);
+robot.keyRelease(KeyEvent.VK_F5);
+
+
+//Thread.Sleep() & selenium.setSpeed()
+we have to give each web element inspection to wait 
+Operation 1: inspect web element
+Thread.Sleep(2000);
+Operation 2: inspect web element
+Thread.Sleep(2000);
+
+selenium.setSpeed(2000); available only in IDE & RC and now deprecated in Selenium WebDriver 
+one time declare is fine to wait for each web element inspection
+Operation 1:
+Operation 2:
+		
+		
+// how to launch browser without System.setProperty
+
+we need to set ChromeDriver path under System/user varaiable in Environment variables set upload
+
+
+//how to maximise() or resize the window
+case 1:
+driver.manage().window().maximize();
+case 2: Resize
+Dimension dimension=new Dimension(500,600)
+driver.manage().window().setSize(dimension);
+case 3:
+//this needs to give before browser launching
+ChromeOptions chromeoptions=new ChromeOptions();
+chromeoptions.addarguments("--start-maximized");
+
+//how to handle Authentication pop up 
+case 1:
+driver.get("https://USERNAME:PASSWORD@url.com");
+
+case 2: by using AUTOIT
+
+
+//how to press enter key to perform search
+case 1:
+sendkeys("FIS"+Keys.ENTER);
+case 2:
+sendkeys("FIS \n");
+case 3:
+WebElement searchbox=driver.findElement(By.name("q");
+searchbox.sendkeys("FIS");
+searchbox.submit();
+case 4: robot class
+
+//ActiveElement()
+here if we dont need findelement(), we can use this- it will go to search box or active element once url got opened 
+
+driver.switchTo().activeElement().sendkeys("FIS \n");
+
+
+// how to run the same test by multiple times in TESTNG
+@Test(invocationCount=3) -> it will execute the below program in 3 times
+
+
+//how to fail the testcase by timeout in TestNG
+
+@Test(timeOut=3000) 
+here if it takes more than 3 secs then it will make the testcase fail
+Exception:
+FAILED: timeOut
+org.testng.internal.thread.ThreadTimeoutException: Method
+
+
+//how to handle the above exception
+
+@Test(timeOut=2000,expectedExceptions=exception.class) ->this will skip the test case failing since we give the expected exception 
+
+here exception may be "ThreadTimeoutException" or "arrayoutofboundaryException" etc
+
+//Significance of alwaysRUN
+
+
+@Test(dependsonMethods="methodname",alwaysRUN=true)
+dependsonMethods- it will fail if depends methods got failed or skipped 
+but when we give alwaysRUN it will skip that depends condition
+
+
+//xpath
+--contains
+Xpath=//*[contains(text(),'here')]
+Xpath=//*[contains(@href,'guru99.com')]	
+Xpath=//*[contains(@id,'message')]
+Xpath=//*[contains(@name,'btn')]
+//AND & OR
+Xpath=//*[@type='submit' or @name='btnReset']
+Xpath=//input[@type='submit' and @name='btnLogin']
+//starts-with
+Xpath=//label[starts-with(@id,'message')]
+//text()
+Xpath=//td[text()='UserID']
+//following
+Xpath=//*[@type='text']//following::input
+Xpath=//*[@type='text']//following::input[1]
+//ancestor
+Xpath=//*[text()='Enterprise Testing']//ancestor::div[1]
+//child
+Xpath=//*[@id='java_technologies']/child::li
+
+//preceding
+Xpath=//*[@type='submit']//preceding::input
+
+//Following-sibling:
+xpath=//*[@type='submit']//following-sibling::input
+
+//parent
+Xpath=//*[@id='rt-feature']//parent::div
+
+//descendant
+Xpath=//*[@id='rt-feature']//descendant::a
+
+
+
+//java code for database connection
+
+Class.forName("com.mysql.jdbc.Driver");  
+Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/sonoo","root","root");  
+//here sonoo is database name, root is username and password  
+Statement stmt=con.createStatement();  
+ResultSet rs=stmt.executeQuery("select * from emp");  
+while(rs.next())  
+System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));  
+con.close();  
+
+
+//Maven life cycle
+
+
+Default
+clean
+site
+
+//Default:
+validate - validate the project is correct and all necessary information is available
+compile - compile the source code of the project
+test - test the compiled source code using a suitable unit testing framework. These tests should not require the code be packaged or deployed
+package - take the compiled code and package it in its distributable format, such as a JAR.
+verify - run any checks on results of integration tests to ensure quality criteria are met
+install - install the package into the local repository, for use as a dependency in other projects locally
+deploy - done in the build environment, copies the final package to the remote repository for sharing with other developers and projects.
+ 
+ 
+ //String - represents sequence of characters
+ 
+ 1.String - immutable(not changable or constant)
+ 2.String Buffer- mutable(changable) & synchronised(safe THREADS- executes one by one)- less efficiency  
+ 3.String Builder- mutable(changable) & not synchronised( MULTI-THREAD- executes parallely)- high efficeincy
+ 
+ NOTE: this all 3 implements interface caled "charsequence"
+ 
+ String :
+ String literal - > String name="vinod"; (declare by double qoutes)
+ new keyword - > String name=new String("vinod")
+ 
+ String Buffer & Builder:
+ StringBuffer name=new StringBuffer("vinod");
+ StringBuilder name=new StringBuilder("vinod");
+ 
+ String methods:
+ //to get length of string
+		System.out.println(name.length());
+		
+		//to get the char by using index in string
+		System.out.println(name.charAt(1));
+		
+		//to verify string is empty ?
+		System.out.println(name.isEmpty());
+		
+		//to add text in existing string
+		System.out.println(name.concat("kumar"));
+		
+		//String is immutable
+		System.out.println(name);
+		
+		//to change into upper case
+		System.out.println(name.toUpperCase());
+		
+		//to change into lower case
+		System.out.println(name.toLowerCase());
+		
+		//to crop the string
+		System.out.println(name.substring(1, 3));
+		
+		//valueOf
+		int number=3;
+		System.out.println(String.valueOf(number));
+		
+		//indexOf
+		System.out.println(name.indexOf("a"));
+		
+		
+StringBuffer & StringBuilder Methods
+//to reverse the string
+		System.out.println(name.reverse());
+		
+		//to add the text in existing String
+		System.out.println(name.append("kumar"));
+		
+		//StringBuffer is mutable
+		System.out.println(name);
+		
+		//replace
+		System.out.println(name.replace(0,5,"vinod"));
+		
+		//delete
+		System.out.println(name.delete(0, 5));
+		
+		//insert
+		System.out.println(name.insert(0, "vinod"));
+		
+		//capacity
+		System.out.println(name.capacity());
+		
+//Read & write Operation:
+
+************************
+//Write
+
+
+String location="";
+String content="";
+
+1.Using FileWriter:
+FileWriter writer=new FileWriter(location);
+writer.write(content);
+writer.close();
+
+2.Using BufferedWriter
+FileWriter filewriter=new FileWriter(location);
+BufferedWriter writer=new BufferedWriter(filewriter);
+writer.write(content);
+writer.close();
+
+3.Using FileOutputStream
+FileOutputStream fos=new FileOutputStream(location);
+Byte[] rawbyte=content.getbytes();
+fos.write(rawbyte);
+fos.close();
+
+4.Path
+Path path=Paths.get(location);
+Files.write(path,content.getbyte());
+
+*************************
+
+
+ //Read
+ 
+ String location="";
+ 
+ FileReader filereader=new FileReader(location);
+ BufferedReader reader=new BufferedReader(filereader);
+ 
+ //if only one line
+ String currentline=reader.readLine();
+ sysout(currentline);
+ 
+ //if more than one line
+ String Currentline;
+ while((Currentline=content.getbytes())!=null)
+ {
+ sysout(Currentline);
+ }
+ 
+*************************** 
+
+ //read properties file
+ 
+ create a file under a project : ex: config.properties- it contains key & value
+ 
+ FileInputStream fis=new FileInputStream("config.properties");
+ 
+Properties properties=new Properties();
+Properties.load(fis);
+
+String browser=properties.getProperty("Browser"); here key=Browser
+String location=properties.getProperty("DriverLocation");here key=DriverLocation
+
+System.setProperty("webdriver.chrome.driver",location);
+
+
+
+//Collection
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
